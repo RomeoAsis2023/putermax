@@ -3,18 +3,27 @@
     <script src="https://js.puter.com/v2/"></script>
     <script>
         (async () => {
-            // Create a directory for your website
-            const dirName = puter.randName();
-            await puter.fs.mkdir(dirName);
+            // Create and deploy initial version
+            const v1Dir = puter.randName();
+            await puter.fs.mkdir(v1Dir);
+            await puter.fs.write(`${v1Dir}/index.html`, '<h1>Version 1</h1>');
             
-            // Write an index.html file
-            await puter.fs.write(`${dirName}/index.html`, '<h1>Hello World!</h1>');
-            
-            // Deploy the website with a random subdomain
             const subdomain = puter.randName();
-            const site = await puter.hosting.create(subdomain, dirName);
+            const site = await puter.hosting.create(subdomain, v1Dir);
+            puter.print(`Initial version deployed at: <a href="https://${site.subdomain}.puter.site" target="_blank">https://${site.subdomain}.puter.site</a><br>`);
             
-            puter.print(`Website deployed at: <a href="https://${site.subdomain}.puter.site" target="_blank">https://${site.subdomain}.puter.site</a>`);
+            // Create updated version
+            const v2Dir = puter.randName();
+            await puter.fs.mkdir(v2Dir);
+            await puter.fs.write(`${v2Dir}/index.html`, `
+                <h1>Boom! Romeo Version 2 - Updated!</h1>
+                <p>This website has been updated with new content. Yes yes yo!</p>
+                <p style="color: green;">Last updated: ${new Date().toLocaleString()}</p>
+            `);
+            
+            // Update the website to point to the new directory
+            await puter.hosting.update(subdomain, v2Dir);
+            puter.print('Website updated! Refresh the page to see the new version.');
         })();
     </script>
 </body>
