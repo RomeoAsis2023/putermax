@@ -1,0 +1,21 @@
+<html>
+<body>
+    <script src="https://js.puter.com/v2/"></script>
+    <script>
+        (async () => {
+            // Create a directory for your website
+            const dirName = puter.randName();
+            await puter.fs.mkdir(dirName);
+            
+            // Write an index.html file
+            await puter.fs.write(`${dirName}/index.html`, '<h1>Hello World!</h1>');
+            
+            // Deploy the website with a random subdomain
+            const subdomain = puter.randName();
+            const site = await puter.hosting.create(subdomain, dirName);
+            
+            puter.print(`Website deployed at: <a href="https://${site.subdomain}.puter.site" target="_blank">https://${site.subdomain}.puter.site</a>`);
+        })();
+    </script>
+</body>
+</html>
